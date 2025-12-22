@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Stardew Valley GeoGuessr</title>
+  <link rel="preload" href="css/Stardew_Valley.otf" as="font" type="font/otf" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+  <div id="background-layer" aria-hidden="true">
+    <img id="bg-img" src="assets/images/background.png" alt="" onerror="this.style.display='none'" />
+    <img id="fg-left" src="assets/images/foreground_left.png" alt="" onerror="this.style.display='none'" />
+    <img id="fg-right" src="assets/images/foreground_right.png" alt="" onerror="this.style.display='none'" />
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Settings</h2>
+        <button id="closeSettingsBtn" class="modal-close">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="setting-group">
+          <label class="setting-label">Map Style</label>
+          <div class="setting-options">
+            <label class="radio-option">
+              <input type="radio" name="mapStyle" value="normal" checked />
+              <span class="radio-custom"></span>
+              <span class="radio-text">Original Map</span>
+            </label>
+            <label class="radio-option">
+              <input type="radio" name="mapStyle" value="ai" />
+              <span class="radio-custom"></span>
+              <span class="radio-text">AI Enhanced (filled edges)</span>
+            </label>
+          </div>
+        </div>
+        <div class="credits">
+          <label class="setting-label">Credits</label>
+          <p>All art by ConcernedApe</p>
+          <p>Font: <a href="https://www.reddit.com/r/StardewValley/comments/4dtgp7/by_popular_request_a_stardew_valley_font_for_your" target="_blank">Reddit - Stardew Valley Font</a></p>
+          <p>Map: <a href="https://www.reddit.com/r/StardewValley/comments/c2op6w/hires_full_world_map/" target="_blank">Reddit - Hi-res Full World Map</a></p>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button id="saveSettingsBtn" class="primary">Save & Restart</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="app">
+    <header class="top-bar">
+      <div class="brand">SV Guessr</div>
+      <div class="controls">
+        <button id="newRoundBtn" class="primary">New Round</button>
+        <button id="checkBtn" class="secondary">Submit Guess</button>
+        <button id="resetViewBtn" class="ghost">Reset View</button>
+        <button id="settingsBtn" class="icon-btn" title="Settings">⚙</button>
+      </div>
+      <div class="status-pill">
+        <span id="roundLabel">Round 0</span>
+        <span class="dot"></span>
+        <span id="scoreLabel">Total 0</span>
+      </div>
+    </header>
+
+    <main class="board">
+      <!-- Spawn view: fixed view of where you spawned -->
+      <section class="map-shell spawn-view">
+        <div class="card-title">Your Location</div>
+        <div id="spawnMap" class="map" aria-label="Spawn location">
+          <canvas id="spawnCanvas" aria-hidden="true"></canvas>
+        </div>
+        <div class="map-hint">Drag to look around</div>
+      </section>
+
+      <!-- Guess view: interactive map to make your guess -->
+      <section class="map-shell guess-view">
+        <div class="card-title">Make Your Guess</div>
+        <div id="guessMap" class="map" aria-label="Map" role="application">
+          <canvas id="guessCanvas" aria-hidden="true"></canvas>
+          <div id="markers"></div>
+        </div>
+        <div class="hint">Pinch/scroll to zoom, drag to pan, tap to guess</div>
+        <div class="zoom-controls">
+          <button id="zoomInBtn" class="zoom-btn">+</button>
+          <button id="zoomOutBtn" class="zoom-btn">−</button>
+        </div>
+      </section>
+
+      <aside class="side">
+        <div class="card stats-card">
+          <div class="card-title">Round Info</div>
+          <div class="stat-row"><span>Distance</span><span id="distanceLabel">-</span></div>
+          <div class="stat-row"><span>Score</span><span id="roundScoreLabel">-</span></div>
+          <div class="stat-row"><span>Average</span><span id="avgScoreLabel">-</span></div>
+        </div>
+        <div class="card history-card">
+          <div class="card-title">History</div>
+          <ol id="history" class="history"></ol>
+        </div>
+      </aside>
+    </main>
+
+    <!-- Mobile action bar -->
+    <div class="mobile-actions">
+      <button id="mobileNewRoundBtn" class="mobile-btn primary">New Round</button>
+      <button id="mobileCheckBtn" class="mobile-btn secondary">Submit</button>
+    </div>
+  </div>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
