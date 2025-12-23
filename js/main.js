@@ -86,6 +86,7 @@ const state = {
   // Game state
   spawnMask: null,
   round: 0,
+  completedRounds: 0,
   totalScore: 0,
   target: null,
   guess: null,
@@ -365,6 +366,9 @@ function startRound() {
   markers.guess.style.display = "none";
   markers.target.style.display = "none";
   markers.ping.style.display = "none";
+  // Re-enable check buttons
+  els.checkBtn.disabled = false;
+  if (els.mobileCheckBtn) els.mobileCheckBtn.disabled = false;
   updateHud();
   updateHint();
   loadSpawnCrop(); // Load cropped region for this spawn
@@ -803,11 +807,16 @@ function renderMarkers() {
 }
 
 function revealRound() {
+  if (state.revealed) return;
   if (!state.guess) {
     alert("Click on the map to make a guess first.");
     return;
   }
   state.revealed = true;
+  // Disable check buttons to prevent double submission
+  els.checkBtn.disabled = true;
+  if (els.mobileCheckBtn) els.mobileCheckBtn.disabled = true;
+  state.completedRounds += 1;
   const distance = Math.hypot(state.guess.x - state.target.x, state.guess.y - state.target.y);
   const diag = Math.hypot(state.mapSize.width, state.mapSize.height);
   const score = scoreFromDistance(distance, diag);
@@ -842,8 +851,8 @@ function updateHud(distance, roundScore) {
     els.distanceLabel.textContent = "-";
   }
   els.roundScoreLabel.textContent = roundScore != null ? `${roundScore} / 5000` : "-";
-  const roundsPlayed = state.history.length;
-  els.avgScoreLabel.textContent = roundsPlayed ? `${Math.round(state.totalScore / roundsPlayed)} avg` : "-";
+  const roundsPlayed = state.completedRounds;
+  els.avgScoreLabel.textContent = roundsPlayed > 0 ? `${Math.round(state.totalScore / roundsPlayed)} avg` : "-";
   renderHistory();
 }
 
